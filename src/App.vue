@@ -1,28 +1,63 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Product Cards</h1>
+    <div class="product-list">
+      <ProductCard
+        v-for="(product, index) in products"
+        :key="index"
+        :product="product"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from "axios";
+import ProductCard from "./components/ProductCard.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    ProductCard,
+  },
+  data() {
+    return {
+      products: [],
+    };
+  },
+  created() {
+    // Fetch products from the API when the component is created
+    axios
+      .get("https://fakestoreapi.com/products")
+      .then((response) => {
+        this.products = response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+  },
+};
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 40px;
+}
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+  padding: 20px;
+}
+
+@media (min-width: 600px) {
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
 }
 </style>
